@@ -21,20 +21,20 @@ module.exports = function (app) {
   app.use(function(req, res, next) {
     // Do not allow POST requests to route '/celebrities/...'
     // when app is living in cloud platform
-    if ( Number(process.env.DEMO) &&
-         req.method === 'POST' &&
-         /^\/celebrities\/.*/i.test(req.url) ) {
+//    if ( Number(process.env.DEMO) &&
+  //       req.method === 'POST' &&
+    //     /^\/celebrities\/.*/i.test(req.url) ) {
 
-      var error = {
-        code: 403,
-        error: 'POST requests to /celebrities/ are forbidden',
-        url: req.url
-      };
+    //  var error = {
+     //   code: 403,
+     //   error: 'POST requests to /celebrities/ are forbidden',
+      //  url: req.url
+     // };
 
-      console.log('error:', error);
-      res.status(403).json(error);
-    }
-    else
+     // console.log('error:', error);
+     // res.status(403).json(error);
+   // }
+   // else
       next();
   });
 

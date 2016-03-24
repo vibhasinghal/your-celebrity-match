@@ -1,7 +1,7 @@
 extends ./layout.jade
 
 block title
-  title #{user.name}'s Celebrity Match
+  title #{user.name}'s Personality Match
 
 block extra-header
   link(rel='stylesheet', href='/css/page.css')
@@ -16,7 +16,7 @@ block content
         .col-md-8
           a.button.h3.back(href='javascript:void(0)') &#8592; BACK
           h3 How does this app analyze your personality?
-          p Your Celebrity Match uses the&nbsp;
+          p Your Personality Match uses the&nbsp;
             a(href='https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/personality-insights.html') IBM Watson Personality Insights service
             | &nbsp;to analyze the language in your public Twitter feed and apply it to a spectrum of characteristics. Then, we compare your results to the Twitter feeds of 100+ celebrities.
           h3 What do these traits mean?

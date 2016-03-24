@@ -37,24 +37,26 @@ var PERSONALITY = 0,
 /**
  * Updates an array with the celebrity profile pictures.
  */
-function updateBackground() {
+function updateBackground(matchAgainst) {
+matchAgainst = "," + matchAgainst + ",";
   getCelebrityFromDB({}).then(function(profiles) {
-    celebs = profiles;
-    var images = profiles.map(function(profile) {
-      return {
-        username: '@' + profile.username,
-        image: profile.image
-      };
-    });
+	celebs = profiles;
 
-    // make sure we have at least 24 pictures by concatenating them.
-    while(images.length > 0 && images.length < 24) {
-      images = images.concat(images); // note: this grows exponentially
-    }
-    pics = shuffle(images);
-  });
+var array = [];
+   for (var i = 0, len = celebs.length; i < len; i++) {
+   var m = "," + celebs[i].username + ",";
+   if(matchAgainst.indexOf(m) < 0 && matchAgainst != ',,')
+ 	{
+	array.push(i);
 }
-updateBackground();
+}
+
+for(var i = array.length - 1; i >=0 ;  i--) {
+celebs.splice(array[i], 1);
+}
+    });
+	
+}
 
 
 // Shuffle an array with images and username
@@ -92,18 +94,19 @@ function getDiffProfiles(user, celebs, type) {
   };
 }
 
+
 // Render the home page
 router.get('/', function (req, res) {
-  updateBackground();
-  res.render('index',{pics:pics});
+res.render('index',{pics:pics});
 });
 
 router.post('/', function(req, res) {
-  var username = req.body.username;
-  if (username && username.substr(0,1) !== '@') {
-    username = '@' + username;
-  }
-  res.redirect(username ? '/like/' + username : '/');
+var username = req.body.username;
+var matchAgainst = req.body.matchAgainst;
+if (username && username.substr(0,1) !== '@') {
+username = '@' + username;
+}
+res.redirect(username ? '/like/' + username + "?matchAgainst=" + matchAgainst : '/');
 });
 
 /**
@@ -112,6 +115,8 @@ router.post('/', function(req, res) {
 */
 router.get('/like/@:username', function (req, res) {
   var username = req.params.username;
+  var matchAgainst = req.param('matchAgainst');
+
   if (!username)
     return res.render('index', {info: 'You need to provide a username.',pics:pics});
 
@@ -121,10 +126,13 @@ router.get('/like/@:username', function (req, res) {
     getProfile = Q.denodeify(req.personality_insights.profile.bind(req.personality_insights)),
     getUserFromDB = Q.denodeify(User.findOne.bind(User)),
     saveUserInDB = Q.denodeify(User.createOrUpdate.bind(User));
+    
+    updateBackground(matchAgainst);
 
   showUser(username)
   .then(function(user) {
     console.log('username:', username);
+	
 
     if (!user)
       return;
